@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUTA AHT — Continuá tu viaje con la Red AHT</title>
+<style>
+  :root{
+    --azul-aht:#0b3954;
+    --azul-claro:#1e6091;
+    --dorado:#c9a24b;
+    --gris-fondo:#f5f6f8;
+    --gris-texto:#5a6472;
+    --blanco:#ffffff;
+    --radio:14px;
+    --sombra:0 4px 18px rgba(11,57,84,0.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--gris-fondo);
+    color:#1c2733;
+  }
+  header.hero{
+    background:linear-gradient(135deg,var(--azul-aht),var(--azul-claro));
+    color:var(--blanco);
+    padding:32px 20px 40px;
+    text-align:center;
+  }
+  header.hero .marca{
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    opacity:0.85;
+    margin-bottom:6px;
+  }
+  header.hero h1{
+    font-size:30px;
+    margin:0 0 8px;
+    font-weight:700;
+  }
+  header.hero p.tagline{
+    font-size:15px;
+    max-width:480px;
+    margin:0 auto;
+    opacity:0.92;
+    line-height:1.5;
+  }
+  .qr-box{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:var(--radio);
+    padding:16px 20px;
+    margin-top:22px;
+  }
+  .qr-box img{
+    width:120px;
+    height:120px;
+    border-radius:8px;
+    background:#fff;
+    padding:6px;
+  }
+  .qr-box span{
+    font-size:12px;
+    opacity:0.85;
+    max-width:220px;
+  }
+  main{
+    max-width:1100px;
+    margin:0 auto;
+    padding:0 20px 60px;
+  }
+  .buscador{
+    background:var(--blanco);
+    border-radius:var(--radio);
+    box-shadow:var(--sombra);
+    padding:22px;
+    margin-top:-26px;
+    margin-bottom:30px;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr auto;
+    gap:14px;
+    align-items:end;
+  }
+  @media (max-width:980px){
+    .buscador{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:560px){
+    .buscador{grid-template-columns:1fr;}
+  }
+  .campo select:disabled{
+    background:#f1f3f5;
+    color:#9aa3ad;
+    cursor:not-allowed;
+  }
+  .campo label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--gris-texto);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:6px;
+  }
+  .campo select, .campo input{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid #d9dee3;
+    border-radius:9px;
+    font-size:14px;
+    background:var(--blanco);
+    color:#1c2733;
+  }
+  .btn-buscar{
+    background:var(--azul-aht);
+    color:#fff;
+    border:none;
+    padding:12px 22px;
+    border-radius:9px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .btn-buscar:hover{background:var(--azul-claro);}
+  .resumen{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .resumen h2{
+    font-size:18px;
+    margin:0;
+  }
+  .resumen .contador{
+    font-size:13px;
+    color:var(--gris-texto);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:20px;
+  }
+  .card{
+    background:var(--blanco);
+    border-radius:var(--radio);
+    overflow:hidden;
+    box-shadow:var(--sombra);
+    display:flex;
+    flex-direction:column;
+  }
+  .card img{
+    width:100%;
+    height:160px;
+    object-fit:cover;
+    display:block;
+  }
+  .card .body{
+    padding:16px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  .card .ciudad-tag{
+    font-size:11px;
+    font-weight:700;
+    color:var(--azul-claro);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:4px;
+  }
+  .card h3{
+    font-size:17px;
+    margin:0 0 6px;
+    line-height:1.25;
+  }
+  .card .categoria{
+    font-size:12.5px;
+    color:var(--gris-texto);
+    margin-bottom:10px;
+  }
+  .card .beneficio{
+    font-size:12px;
+    background:#fdf6e7;
+    color:#8a6a16;
+    border:1px solid #f1e2b3;
+    border-radius:7px;
+    padding:6px 9px;
+    margin-bottom:12px;
+  }
+  .card .contacto-pendiente{
+    font-size:11.5px;
+    color:#9aa3ad;
+    font-style:italic;
+    margin-bottom:12px;
+  }
+  .card .acciones{
+    margin-top:auto;
+    display:flex;
+    gap:8px;
+  }
+  .card .acciones button{
+    flex:1;
+    padding:9px 10px;
+    border-radius:8px;
+    font-size:12.5px;
+    font-weight:600;
+    border:1px solid var(--azul-aht);
+    background:#fff;
+    color:var(--azul-aht);
+    cursor:pointer;
+  }
+  .card .acciones button.principal{
+    background:var(--azul-aht);
+    color:#fff;
+  }
+  .vacio{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--gris-texto);
+  }
+  footer{
+    text-align:center;
+    padding:30px 20px 50px;
+    color:var(--gris-texto);
+    font-size:12.5px;
+    line-height:1.7;
+  }
+  .nota-demo{
+    background:#fff4e5;
+    border:1px solid #f3d9a8;
+    color:#7a5410;
+    border-radius:10px;
+    padding:14px 18px;
+    font-size:12.5px;
+    margin:0 0 26px;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="marca">RED DE HOSPITALIDAD AHT</div>
+  <h1>Continuá tu viaje con la Red AHT</h1>
+  <p class="tagline">Descubrí hoteles asociados a la Asociación de Hoteles de Turismo en tu próximo destino, con los mismos estándares de calidad que elegiste hoy.</p>
+  <div class="qr-box">
+    <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://rutaaht.com.ar" alt="QR Ruta AHT">
+    <span>Este QR es de ejemplo. Al publicar el sitio, reemplazalo por la URL final (por ej. rutaaht.com.ar) para imprimirlo en habitaciones y recepción.</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="buscador">
+    <div class="campo">
+      <label for="hotelActual">Estoy hospedado en</label>
+      <select id="hotelActual"></select>
+    </div>
+    <div class="campo">
+      <label for="proximoDestino">Mi próximo destino (provincia)</label>
+      <select id="proximoDestino"></select>
+    </div>
+    <div class="campo">
+      <label for="ciudadDestino">Ciudad</label>
+      <select id="ciudadDestino" disabled></select>
+    </div>
+    <div class="campo">
+      <label for="tipoExperiencia">Tipo de experiencia</label>
+      <select id="tipoExperiencia"></select>
+    </div>
+    <button class="btn-buscar" onclick="render()">Buscar hoteles</button>
+  </div>
+
+  <div class="nota-demo">
+    <strong>Nota sobre esta versión:</strong> los hoteles y ciudades de este prototipo son establecimientos reales asociados a AHT (relevados de aht.com.ar y de los sitios oficiales de cada hotel), cubriendo Buenos Aires, Mendoza, Bariloche, Salta, Puerto Iguazú, Chubut (Puerto Madryn, Comodoro Rivadavia, Puerto Pirámides y Esquel), Santa Cruz (El Calafate y El Chaltén), Tierra del Fuego (Ushuaia) y Jujuy (Purmamarca, San Salvador y Tilcara). AHT tiene filiales en todas las provincias del país; este listado es una muestra representativa y se puede seguir ampliando. Varios hoteles ya muestran una foto real tomada de su sitio oficial; el resto conserva una foto de ejemplo hasta que el hotel cargue la suya. Los datos de contacto (web/WhatsApp) y beneficios siguen siendo de ejemplo. Para producción, cada hotel asociado cargaría su propia ficha completa.
+  </div>
+
+  <div class="resumen">
+    <h2 id="tituloResultados">Hoteles asociados</h2>
+    <div class="contador" id="contador"></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="vacio" id="vacio" style="display:none;">No encontramos hoteles asociados con esos filtros. Probá otra ciudad o tipo de experiencia.</div>
+
+</main>
+
+<footer>
+  RUTA AHT — Una iniciativa conceptual para la Asociación de Hoteles de Turismo de la República Argentina.<br>
+  Prototipo funcional · Fase 1 (directorio digital + búsqueda por ciudad) de la propuesta RUTA AHT.
+</footer>
+
+<script>
+// Dataset de hoteles asociados a AHT (relevados de aht.com.ar / ahtra.com.ar).
+// Fotos, web, WhatsApp y beneficios son placeholders de demostración.
+const hoteles = [
+  // Buenos Aires
+  {nombre:"Alvear Palace Hotel", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Lujo / Gran Hotel"},
+  {nombre:"Four Seasons Hotel Buenos Aires", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Lujo / Gran Hotel"},
+  {nombre:"Hilton Buenos Aires", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Urbano / Negocios"},
+  {nombre:"InterContinental Buenos Aires", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Urbano / Negocios"},
+  {nombre:"Amerian Buenos Aires Park Hotel", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Urbano"},
+  {nombre:"Abasto Hotel Buenos Aires", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Boutique"},
+  {nombre:"Alvear Art Hotel", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Boutique / Diseño"},
+  {nombre:"1828 Smart Hotel", ciudad:"Buenos Aires", provincia:"Ciudad de Buenos Aires", categoria:"Urbano", beneficio:"Ejemplo de beneficio Fase 3: late check-out sujeto a disponibilidad"},
+
+  // Mendoza
+  {nombre:"Park Hyatt Mendoza", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Lujo / Vinos"},
+  {nombre:"Sheraton Mendoza Hotel", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Urbano / Negocios"},
+  {nombre:"Hilton Mendoza", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Urbano / Negocios"},
+  {nombre:"Entre Cielos Wine Luxury Hotel & Spa", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Boutique / Vinos", beneficio:"Ejemplo de beneficio Fase 3: welcome drink de bienvenida"},
+  {nombre:"Huentala Hotel", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Boutique"},
+  {nombre:"Esplendor Hotel Mendoza", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Boutique"},
+  {nombre:"NH Mendoza Cordillera", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Urbano"},
+  {nombre:"Diplomatic Hotel", ciudad:"Mendoza", provincia:"Mendoza", categoria:"Urbano"},
+
+  // Bariloche
+  {nombre:"Llao Llao Hotel & Resort Golf-Spa", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Resort de montaña", beneficio:"Ejemplo de beneficio Fase 3: upgrade sujeto a disponibilidad"},
+  {nombre:"Sheraton Bariloche", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Resort de montaña"},
+  {nombre:"Panamericano Bariloche", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Resort de montaña"},
+  {nombre:"NH Bariloche Edelweiss", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Urbano / Lago"},
+  {nombre:"Hotel Catedral Ski & Wellness", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Resort de montaña"},
+  {nombre:"Hotel Tres Reyes", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Urbano / Lago"},
+  {nombre:"Correntoso Lake & River Hotel", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Boutique / Lago"},
+  {nombre:"Sol Arrayán Hotel & Spa", ciudad:"Bariloche", provincia:"Río Negro", categoria:"Resort de montaña"},
+
+  // Salta
+  {nombre:"Sheraton Salta Hotel", ciudad:"Salta", provincia:"Salta", categoria:"Urbano / Negocios"},
+  {nombre:"Solar de la Plaza Hotel", ciudad:"Salta", provincia:"Salta", categoria:"Boutique histórico"},
+  {nombre:"Alejandro I Hotel", ciudad:"Salta", provincia:"Salta", categoria:"Urbano"},
+
+  // Puerto Iguazú
+  {nombre:"Loi Suites Iguazú", ciudad:"Puerto Iguazú", provincia:"Misiones", categoria:"Resort selva", beneficio:"Ejemplo de beneficio Fase 3: welcome drink de bienvenida"},
+  {nombre:"Mercure Iguazú Hotel Iru", ciudad:"Puerto Iguazú", provincia:"Misiones", categoria:"Resort selva"},
+  {nombre:"Mérit Iguazú Hotel", ciudad:"Puerto Iguazú", provincia:"Misiones", categoria:"Urbano"},
+  {nombre:"O2 Hotel Iguazú", ciudad:"Puerto Iguazú", provincia:"Misiones", categoria:"Boutique"},
+  {nombre:"Panoramic Grand Iguazú", ciudad:"Puerto Iguazú", provincia:"Misiones", categoria:"Urbano / Vistas"},
+  {nombre:"Yvy Hotel de Selva", ciudad:"Puerto Iguazú", provincia:"Misiones", categoria:"Resort selva"},
+
+  // Comodoro Rivadavia (Chubut)
+  {nombre:"Lucania Palazzo Hotel", ciudad:"Comodoro Rivadavia", provincia:"Chubut", categoria:"Boutique / Costero", foto:"https://www.lucania-palazzo.com/assets/cache/uploads/1920x1036/tripadvisor-1766023259.jpg"},
+  {nombre:"Wam Hotel Patagónico", ciudad:"Comodoro Rivadavia", provincia:"Chubut", categoria:"Boutique"},
+
+  // Puerto Madryn (Chubut)
+  {nombre:"Hotel Península Valdés", ciudad:"Puerto Madryn", provincia:"Chubut", categoria:"Urbano / Costero", foto:"https://www.hotelpeninsula.com.ar/assets/cache/uploads/habitaciones/1920x770/habitacion-senior-hotel-peninsula-valdes-puerto-madryn-chubut-argentina-1719408582.jpg"},
+  {nombre:"Hotel Pirén", ciudad:"Puerto Madryn", provincia:"Chubut", categoria:"Urbano", foto:"https://images-new.pxsol.com/tPSlMP2w-w4D1AdaVYkHgaQ4BxXGymeeHcgl66x-2vs/rs:fill:800:0:1/q:80/plain/https%3A%2F%2Ffiles-p.pxsol.com%2F1730%2FP3470%2Fphotos%2F5c62ed3be4d07.jpg@jpg"},
+  {nombre:"Hotel Tolosa", ciudad:"Puerto Madryn", provincia:"Chubut", categoria:"Boutique", foto:"https://www.hoteltolosa.com.ar/images/uploads/538/8642hotel_tolosa__3_.jpg"},
+  {nombre:"La Posada Hotel Boutique", ciudad:"Puerto Madryn", provincia:"Chubut", categoria:"Boutique", foto:"https://www.la-posada.com.ar/wp-content/uploads/2022/12/pile-1x.jpg"},
+  {nombre:"Territorio Puerto Madryn", ciudad:"Puerto Madryn", provincia:"Chubut", categoria:"Boutique"},
+  {nombre:"Rayentray Grand Hotel", ciudad:"Puerto Madryn", provincia:"Chubut", categoria:"Resort / Spa", beneficio:"Ejemplo de beneficio Fase 3: upgrade sujeto a disponibilidad", foto:"https://cdn.prod.website-files.com/6643d4d10e60b2ef7006264d/68519ae807703d52778864c8__DSC3411.jpg"},
+  {nombre:"Yene Hue Puerto Madryn Hotel", ciudad:"Puerto Madryn", provincia:"Chubut", categoria:"Urbano", foto:"https://d1ofesossdj49a.cloudfront.net/sw_2421/TN/frente_513790.jpg"},
+
+  // Puerto Pirámides (Chubut, Península Valdés)
+  {nombre:"Océano Patagonia", ciudad:"Puerto Pirámides", provincia:"Chubut", categoria:"Resort / Costero"},
+
+  // Esquel / Los Alerces (Chubut)
+  {nombre:"Hostería Futalaufquen", ciudad:"Esquel", provincia:"Chubut", categoria:"Lodge / Parque Nacional"},
+
+  // El Calafate (Santa Cruz)
+  {nombre:"Hotel Posada Los Álamos", ciudad:"El Calafate", provincia:"Santa Cruz", categoria:"Resort / Lago"},
+  {nombre:"Hotel Xelena", ciudad:"El Calafate", provincia:"Santa Cruz", categoria:"Boutique / Lago"},
+  {nombre:"Hotel Bahía Redonda", ciudad:"El Calafate", provincia:"Santa Cruz", categoria:"Urbano / Lago"},
+  {nombre:"Hotel Chaltén Suites", ciudad:"El Calafate", provincia:"Santa Cruz", categoria:"Urbano"},
+
+  // El Chaltén (Santa Cruz)
+  {nombre:"Explora El Chaltén", ciudad:"El Chaltén", provincia:"Santa Cruz", categoria:"Resort / Montaña"},
+
+  // Ushuaia (Tierra del Fuego)
+  {nombre:"Arakur Ushuaia Resort & Spa", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Resort / Lujo", beneficio:"Ejemplo de beneficio Fase 3: late check-out sujeto a disponibilidad"},
+  {nombre:"Las Hayas Resort Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Resort / Montaña"},
+  {nombre:"Los Cauquenes Resort & Spa", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Resort / Costero"},
+  {nombre:"Cilene del Faro - Suites & Spa", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Boutique"},
+  {nombre:"Tolkeyén Ushuaia Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Los Acebos Ushuaia Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano / Vistas"},
+  {nombre:"Lennox Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Boutique / Urbano"},
+  {nombre:"De Los Andes Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Hotel Los Yámanas", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Altos Ushuaia Hotel & Resto", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Cap Polonio Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Fueguino Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Hotel Los Ñires", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Hotel Ushuaia", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Hostal del Bosque", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Boutique"},
+  {nombre:"Canal Beagle", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Cumbres del Martial - Villa de Montaña", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Boutique / Montaña"},
+  {nombre:"Las Lengas Hotel", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano"},
+  {nombre:"Hotel Albatros", ciudad:"Ushuaia", provincia:"Tierra del Fuego", categoria:"Urbano / Costero"},
+
+  // Purmamarca (Jujuy)
+  {nombre:"Colores de Purmamarca Hotel Boutique", ciudad:"Purmamarca", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"El Manantial del Silencio Hotel Spa", ciudad:"Purmamarca", provincia:"Jujuy", categoria:"Boutique / Spa"},
+  {nombre:"La Comarca Hotel", ciudad:"Purmamarca", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Los Colorados", ciudad:"Purmamarca", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Marqués de Tojo Hotel", ciudad:"Purmamarca", provincia:"Jujuy", categoria:"Boutique"},
+
+  // San Salvador de Jujuy
+  {nombre:"El Arribo Hotel", ciudad:"San Salvador de Jujuy", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Gregorio Iº Hotel Boutique", ciudad:"San Salvador de Jujuy", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Howard Johnson Plaza Jujuy", ciudad:"San Salvador de Jujuy", provincia:"Jujuy", categoria:"Urbano"},
+  {nombre:"Termas de Reyes Hotel - Spa", ciudad:"San Salvador de Jujuy", provincia:"Jujuy", categoria:"Resort / Spa"},
+
+  // Tilcara (Jujuy)
+  {nombre:"El Reposo del Diablo", ciudad:"Tilcara", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Hotel Patio Alto", ciudad:"Tilcara", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Hotel Vientonorte", ciudad:"Tilcara", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Las Marías Hotel Boutique", ciudad:"Tilcara", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Las Terrazas Hotel Boutique", ciudad:"Tilcara", provincia:"Jujuy", categoria:"Boutique"},
+  {nombre:"Villa del Cielo Hotel Tilcara", ciudad:"Tilcara", provincia:"Jujuy", categoria:"Boutique"},
+];
+
+// Genera una foto placeholder estable por hotel (a reemplazar por fotos reales).
+function fotoPlaceholder(nombre){
+  const slug = encodeURIComponent(nombre.toLowerCase().replace(/[^a-z0-9]+/g,'-'));
+  return `https://picsum.photos/seed/${slug}/420/280`;
+}
+
+const nombresHoteles = [...new Set(hoteles.map(h=>h.nombre))].sort();
+const provincias = [...new Set(hoteles.map(h=>h.provincia))].sort();
+
+function llenarSelect(id, opciones, primerLabel){
+  const sel = document.getElementById(id);
+  sel.innerHTML = `<option value="">${primerLabel}</option>` +
+    opciones.map(o=>`<option value="${o}">${o}</option>`).join('');
+}
+
+llenarSelect('hotelActual', nombresHoteles, 'Seleccioná tu hotel actual');
+llenarSelect('proximoDestino', provincias, 'Seleccioná una provincia');
+
+// Ciudad y Tipo de experiencia arrancan vacíos/deshabilitados hasta elegir provincia.
+document.getElementById('ciudadDestino').innerHTML = '<option value="">Elegí primero una provincia</option>';
+llenarSelect('tipoExperiencia', [], 'Cualquier tipo de experiencia');
+
+function actualizarCiudades(){
+  const prov = document.getElementById('proximoDestino').value;
+  const selCiudad = document.getElementById('ciudadDestino');
+
+  if(!prov){
+    selCiudad.innerHTML = '<option value="">Elegí primero una provincia</option>';
+    selCiudad.disabled = true;
+  } else {
+    const ciudadesProv = [...new Set(hoteles.filter(h=>h.provincia===prov).map(h=>h.ciudad))].sort();
+    llenarSelect('ciudadDestino', ciudadesProv, 'Cualquier ciudad de la provincia');
+    selCiudad.disabled = false;
+  }
+  actualizarTipos();
+}
+
+function actualizarTipos(){
+  const prov = document.getElementById('proximoDestino').value;
+  const ciudad = document.getElementById('ciudadDestino').value;
+  const selTipo = document.getElementById('tipoExperiencia');
+  const tipoActual = selTipo.value;
+
+  let candidatos = hoteles;
+  if(prov) candidatos = candidatos.filter(h=>h.provincia===prov);
+  if(ciudad) candidatos = candidatos.filter(h=>h.ciudad===ciudad);
+
+  const tiposDisponibles = [...new Set(candidatos.map(h=>h.categoria))].sort();
+  llenarSelect('tipoExperiencia', tiposDisponibles, 'Cualquier tipo de experiencia');
+
+  // Si la selección previa de tipo sigue disponible, la conservamos.
+  if(tipoActual && tiposDisponibles.includes(tipoActual)){
+    selTipo.value = tipoActual;
+  }
+}
+
+document.getElementById('proximoDestino').addEventListener('change', actualizarCiudades);
+document.getElementById('ciudadDestino').addEventListener('change', actualizarTipos);
+
+function render(){
+  const hotelActualNombre = document.getElementById('hotelActual').value;
+  const hotelActual = hoteles.find(h=>h.nombre === hotelActualNombre);
+  const provDestino = document.getElementById('proximoDestino').value;
+  const ciudadDestino = document.getElementById('ciudadDestino').value;
+  const tipo = document.getElementById('tipoExperiencia').value;
+
+  let resultado = hoteles.filter(h=>{
+    if(provDestino && h.provincia !== provDestino) return false;
+    if(ciudadDestino && h.ciudad !== ciudadDestino) return false;
+    if(tipo && h.categoria !== tipo) return false;
+    if(hotelActual && h.nombre === hotelActual.nombre) return false; // no te recomendamos tu propio hotel
+    if(hotelActual && !ciudadDestino && !provDestino && h.ciudad === hotelActual.ciudad) return false;
+    return true;
+  });
+
+  const grid = document.getElementById('grid');
+  const vacio = document.getElementById('vacio');
+  const contador = document.getElementById('contador');
+  const titulo = document.getElementById('tituloResultados');
+
+  titulo.textContent = ciudadDestino
+    ? `Hoteles asociados en ${ciudadDestino}`
+    : (provDestino ? `Hoteles asociados en ${provDestino}` : 'Hoteles asociados');
+  contador.textContent = `${resultado.length} hotel${resultado.length===1?'':'es'} encontrado${resultado.length===1?'':'s'}`;
+
+  if(resultado.length === 0){
+    grid.innerHTML = '';
+    vacio.style.display = 'block';
+    return;
+  }
+  vacio.style.display = 'none';
+
+  grid.innerHTML = resultado.map(h=>`
+    <div class="card">
+      <img src="${h.foto || fotoPlaceholder(h.nombre)}" alt="${h.nombre}" loading="lazy" onerror="this.src='${fotoPlaceholder(h.nombre)}'">
+      <div class="body">
+        <div class="ciudad-tag">${h.ciudad} · ${h.provincia}</div>
+        <h3>${h.nombre}</h3>
+        <div class="categoria">${h.categoria}</div>
+        ${h.beneficio ? `<div class="beneficio">${h.beneficio}</div>` : ''}
+        <div class="contacto-pendiente">Web y WhatsApp: a cargar por el hotel</div>
+        <div class="acciones">
+          <button class="principal" disabled title="Se habilita cuando el hotel cargue su WhatsApp">WhatsApp</button>
+          <button disabled title="Se habilita cuando el hotel cargue su sitio">Sitio web</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+render();
+</script>
+
+</body>
+</html>
